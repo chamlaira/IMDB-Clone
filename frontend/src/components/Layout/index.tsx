@@ -17,7 +17,9 @@ const Layout = ({ children, setTheme }: LayoutProps) => {
   return (
     <div className={`layoutContainer-${theme}`}>
       <Header setTheme={setTheme}>OMDB</Header>
-      {children}
+      <div className="childrenContainer">
+        {children}
+      </div>
       <Footer>© Laira Nicole Cham</Footer>
     </div>
   )

@@ -1,7 +1,8 @@
 import { ReactNode, useContext } from "react"
 
-import "./styles.scss"
 import ThemeContext from "../../contexts/theme"
+
+import "./styles.scss"
 
 interface FooterProps {
   children: ReactNode

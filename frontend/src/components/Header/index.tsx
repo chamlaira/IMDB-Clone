@@ -2,6 +2,8 @@ import axios from "axios"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router"
+import { MdDarkMode } from "react-icons/md";
+import { MdLightMode } from "react-icons/md";
 
 import useDebounce from "../../hooks/useDebounce"
 import ThemeContext from "../../contexts/theme"
@@ -58,7 +60,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   return (
     <div className={`headerContainer ${theme}`}>
       <div className="headerContent">
-        <NavLink to="/">{children}</NavLink>
+        <NavLink to="/"><h1>{children}</h1></NavLink>
       </div>
       <div className="searchContainer">
         <input
@@ -69,12 +71,18 @@ const Header = ({ children, setTheme }: HeaderProps) => {
           onChange={handleInputChange}
         />
       </div>
-      <button
-        className="themeButton"
-        onClick={() => setTheme && setTheme(theme === 'dark' ? 'light' : 'dark')}
-      >
-        Enable {theme === 'dark' ? 'Light' : 'Dark'} Mode
-      </button>
+      {
+        theme === 'dark' ?
+          <MdDarkMode
+            className="headerToggleThemeButton"
+            onClick={() => setTheme && setTheme('light')}
+          /> :
+          <MdLightMode
+            className="headerToggleThemeButton"
+            color="black"
+            onClick={() => setTheme && setTheme('dark')}
+          />
+      }
     </div>
   )
 }
