@@ -1,20 +1,20 @@
 import { ReactNode } from "react";
 
 import Header from "../Header";
-
-import "./styles.scss";
 import Footer from "../Footer";
 
+import "./styles.scss";
+
 interface LayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="layoutContainer">
-      <Header>Header</Header>
+      <Header>OMDB</Header>
       {children}
-      <Footer>Footer</Footer>
+      <Footer>© Laira Nicole Cham</Footer>
     </div>
   );
 };

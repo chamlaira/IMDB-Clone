@@ -9,7 +9,12 @@ interface HeaderProps {
 const Header = ({ children }: HeaderProps) => {
   return (
     <div className="headerContainer">
-      {children}
+      <div className="headerContent">
+        {children}
+      </div>
+      <div className="searchContainer">
+        <input className="search" type="text" placeholder="Search movies..." />
+      </div>
     </div>
   );
 };

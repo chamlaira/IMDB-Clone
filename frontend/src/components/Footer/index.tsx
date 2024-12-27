@@ -8,7 +8,7 @@ interface FooterProps {
 
 const Footer = ({ children }: FooterProps) => {
   return (
-    <div>
+    <div className="footerContainer">
       {children}
     </div>
   );
