@@ -1,9 +1,12 @@
-import { ReactNode, useContext, useEffect, useState } from "react"
 import axios from "axios"
+import { ReactNode, useContext, useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 
-import "./styles.scss"
 import useDebounce from "../../hooks/useDebounce"
 import ThemeContext from "../../contexts/theme"
+import { replaceResults, setIsLoading } from "../../state/searchResults/searchResultsSlice"
+
+import "./styles.scss"
 
 interface HeaderProps {
   children: ReactNode
@@ -14,6 +17,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   const theme = useContext(ThemeContext)
   const [searchInput, setSearchInput] = useState("")
   const debouncedInput = useDebounce(searchInput, 1000)
+  const dispatch = useDispatch()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value)
@@ -21,12 +25,16 @@ const Header = ({ children, setTheme }: HeaderProps) => {
 
   const search = async () => {
     if (debouncedInput.length) {
+      dispatch(setIsLoading(true))
       await axios.get(`http://localhost:8080/search/${debouncedInput}/page/1`)
         .then((response) => {
           console.log(response.data)
+          dispatch(replaceResults(response.data))
+          dispatch(setIsLoading(false))
         })
         .catch((error) => {
           console.error(error)
+          dispatch(setIsLoading(false))
         })
     }
   }

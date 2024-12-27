@@ -3,18 +3,18 @@ import { ReactNode, useContext } from "react"
 import "./styles.scss"
 import ThemeContext from "../../contexts/theme"
 
-interface FooterProps {
+interface SearchResultsProps {
   children: ReactNode
 }
 
-const Footer = ({ children }: FooterProps) => {
+const SearchResults = ({ children }: SearchResultsProps) => {
   const theme = useContext(ThemeContext)
 
   return (
-    <div className={`footerContainer ${theme}`}>
-      <p>{children}</p>
+    <div className={`searchResultsContainer-${theme}`}>
+      {children}
     </div>
   )
 }
 
-export default Footer
+export default SearchResults
