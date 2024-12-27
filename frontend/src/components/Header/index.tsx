@@ -1,10 +1,11 @@
 import axios from "axios"
 import { ReactNode, useContext, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
+import { NavLink, useLocation, useNavigate } from "react-router"
 
 import useDebounce from "../../hooks/useDebounce"
 import ThemeContext from "../../contexts/theme"
-import { replaceResults, setIsLoading } from "../../state/searchResults/searchResultsSlice"
+import { replaceResults, setError, setIsLoading } from "../../state/searchResults/searchResultsSlice"
 
 import "./styles.scss"
 
@@ -18,6 +19,8 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   const [searchInput, setSearchInput] = useState("")
   const debouncedInput = useDebounce(searchInput, 1000)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value)
@@ -25,15 +28,24 @@ const Header = ({ children, setTheme }: HeaderProps) => {
 
   const search = async () => {
     if (debouncedInput.length) {
+      if (location.pathname !== '/') {
+        navigate('/')
+      }
       dispatch(setIsLoading(true))
       await axios.get(`http://localhost:8080/search/${debouncedInput}/page/1`)
         .then((response) => {
           console.log(response.data)
-          dispatch(replaceResults(response.data))
+          if (response.data.Response === "True") {
+            dispatch(replaceResults(response.data))
+            dispatch(setError(""))
+          } else {
+            dispatch(setError(response.data.Error))
+          }
           dispatch(setIsLoading(false))
         })
         .catch((error) => {
           console.error(error)
+          dispatch(setError("An error occurred while searching for movies. Please try again later."))
           dispatch(setIsLoading(false))
         })
     }
@@ -46,7 +58,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   return (
     <div className={`headerContainer ${theme}`}>
       <div className="headerContent">
-        <p>{children}</p>
+        <NavLink to="/">{children}</NavLink>
       </div>
       <div className="searchContainer">
         <input

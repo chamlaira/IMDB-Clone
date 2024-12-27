@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { NavLink } from 'react-router'
 
 import Layout from './components/Layout'
 import ThemeContext from './contexts/theme'
@@ -15,19 +16,19 @@ function App() {
     <ThemeContext.Provider value={theme}>
       <div className="App">
         <Layout setTheme={setTheme}>
-          {!searchResults.error && !searchResults.loading ? (
-            <div>
-              {searchResults.searchResults.Search.map((result) => (
-                <div key={result.imdbID}>{result.Title}</div>
-              ))}
-            </div>
-          ) : null}
+          {
+            searchResults.error?.length ? <div>{searchResults.error}</div> : null
+          }
           {
             searchResults.loading ? <div>Loading...</div> : null
           }
-          {
-            searchResults.error ? <div>Error searching for movies. Please try again later.</div> : null
-          }
+          {!searchResults.error && !searchResults.loading && searchResults.searchResults.Search ? (
+            <div>
+              {searchResults.searchResults.Search.map((result) => (
+                <NavLink to={`/movie/${result.imdbID}`} key={result.imdbID} end>{result.Title}</NavLink>
+              ))}
+            </div>
+          ) : null}
         </Layout>
       </div>
     </ThemeContext.Provider>
