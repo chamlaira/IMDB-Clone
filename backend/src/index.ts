@@ -1,13 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
 import axios from "axios";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 8080;
 const API_URL = process.env.API_URL || "http://www.omdbapi.com/";
 const API_KEY = process.env.API_KEY || "";
+
+app.use(cors());
 
 app.get("/", (_, res) => {
   res.send(`OMDB app listening on port ${PORT}`);
@@ -21,7 +25,7 @@ app.get("/search/:searchParam/page/:pageNumber", async (req, res) => {
   await axios
     .get(`${API_URL}?apiKey=${API_KEY}&s=${searchParam}&page=${pageNumber}`)
     .then((response) => {
-      res.send(response.data.Search);
+      res.send(response.data);
     })
     .catch((error) => {
       console.error(error);
