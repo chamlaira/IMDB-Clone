@@ -1,6 +1,18 @@
-.layoutContainer {
+.layoutContainer-light {
   position: absolute;
   top: 50px;
   bottom: 50px;
   width: 100%;
+  background: #1a1a1a;
+}
+
+.layoutContainer-light {
+  position: absolute;
+  top: 50px;
+  bottom: 50px;
+  width: 100%;
+  background: white;
+  p {
+    color: black;
+  }
 }
