@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { SearchResults } from "../../interfaces";
+import { SearchResult, SearchResults } from "../../interfaces";
 
 interface SearchResultsState {
   searchResults: SearchResults;
@@ -21,8 +21,8 @@ const searchResultsSlice = createSlice({
   name: "searchResults",
   initialState,
   reducers: {
-    addResults: (state, action: PayloadAction<SearchResults>) => {
-      state.searchResults = { ...state.searchResults, ...action.payload }
+    addResults: (state, action: PayloadAction<SearchResult[]>) => {
+      state.searchResults.Search = [...state.searchResults.Search, ...action.payload]
     },
     replaceResults: (state, action: PayloadAction<SearchResults>) => {
       state.searchResults = action.payload

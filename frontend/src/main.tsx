@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
-import App from './SearchResults'
+import SearchResults from './SearchResults'
 import Movie from './components/Movie'
 import ThemeContext from './contexts/theme'
 import { store } from './state/store'
@@ -18,7 +18,7 @@ function Root() {
       <ThemeContext.Provider value={theme}>
         <BrowserRouter>
           <Routes>
-            <Route index element={<React.StrictMode><App setTheme={setTheme} /></React.StrictMode>} />
+            <Route index element={<React.StrictMode><SearchResults setTheme={setTheme} /></React.StrictMode>} />
             <Route path="/movie/:id" element={<React.StrictMode><Movie setTheme={setTheme} /></React.StrictMode>} />
           </Routes>
           </BrowserRouter>

@@ -23,16 +23,16 @@ const Movie = ({ setTheme }: MovieProps) => {
   const [error, setError] = useState<string | null>(null)
 
   const fetchMovie = async () => {
-  await axios.get(`http://localhost:8080/movie/${id}`)
-    .then((response) => {
-      console.log(response.data)
-      setMovie(response.data)
-      setError(null)
-    })
-    .catch((error) => {
-      setError("An error occurred while fetching the movie. Please try again later.")
-      console.error(error)
-    })
+    await axios.get(`${import.meta.env.VITE_API_URL}movie/${id}`)
+      .then((response) => {
+        console.log(response.data)
+        setMovie(response.data)
+        setError(null)
+      })
+      .catch((error) => {
+        setError("An error occurred while fetching the movie. Please try again later.")
+        console.error(error)
+      })
   }
 
   useEffect(() => {

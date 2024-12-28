@@ -10,6 +10,7 @@ import ThemeContext from "../../contexts/theme"
 import { replaceResults, setError, setIsLoading } from "../../state/searchResults/searchResultsSlice"
 
 import "./styles.scss"
+import { replaceInput } from "../../state/searchInput/searchInputSlice";
 
 interface HeaderProps {
   children: ReactNode
@@ -34,7 +35,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
         navigate('/')
       }
       dispatch(setIsLoading(true))
-      await axios.get(`http://localhost:8080/search/${debouncedInput}/page/1`)
+      await axios.get(`${import.meta.env.VITE_API_URL}search/${debouncedInput}/page/1`)
         .then((response) => {
           console.log(response.data)
           if (response.data.Response === "True") {
@@ -55,6 +56,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
 
   useEffect(() => {
     search()
+    dispatch(replaceInput(debouncedInput))
   }, [debouncedInput])
 
   return (
