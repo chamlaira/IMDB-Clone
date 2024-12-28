@@ -54,6 +54,19 @@ const Header = ({ children, setTheme }: HeaderProps) => {
     }
   }
 
+  const handleHomeClick = () => {
+    // Reset the search results and input.
+    setSearchInput("")
+    dispatch(replaceInput(""))
+    dispatch(replaceResults({
+      Response: "False",
+      Search: [],
+      totalResults: "0"
+    }))
+    dispatch(setError(""))
+    dispatch(setIsLoading(false))
+  }
+
   useEffect(() => {
     search()
     dispatch(replaceInput(debouncedInput))
@@ -62,7 +75,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   return (
     <div className={`headerContainer ${theme}`}>
       <div className="headerContent">
-        <NavLink to="/"><h1>{children}</h1></NavLink>
+        <NavLink onClick={handleHomeClick} to="/"><h1>{children}</h1></NavLink>
       </div>
       <div className="searchContainer">
         <input
