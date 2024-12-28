@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { NavLink, useParams } from "react-router"
 import { FaRegPlayCircle } from "react-icons/fa"
 import { FaStar } from "react-icons/fa"
 import { CiStar } from "react-icons/ci"
@@ -38,7 +38,11 @@ const Movie = ({ setTheme }: MovieProps) => {
   const { id } = useParams()
   const [movie, setMovie] = useState<IMovie | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [recommendations, setRecommendations] = useState<string | null>(null)
+  const [firstRecommendation, setFirstRecommendation] = useState<IMovie | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
+  // Fetch the movie details.
   const fetchMovie = async () => {
     await axios.get(`${import.meta.env.VITE_API_URL}movie/${id}`)
       .then((response) => {
@@ -53,7 +57,10 @@ const Movie = ({ setTheme }: MovieProps) => {
       })
   }
 
+  // This function will be called when the user clicks the "Get recommendations" button.
   const handleRecommendations = async () => {
+    setIsLoading(true)
+
     // Split the JSON into chunks.
     const splitter = new RecursiveCharacterTextSplitter()
     const chunks = await splitter.createDocuments([JSON.stringify(viewedMovies)])
@@ -111,74 +118,126 @@ const Movie = ({ setTheme }: MovieProps) => {
     ])
 
     const response = await chain.invoke(question)
+    setRecommendations(response)
+    setIsLoading(false)
     console.log('results', response)
+  }
+
+  const getFirstMovie = async (movie: string) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}search/${movie}/page/1`)
+      if (response.data.Response === 'True') {
+        const firstMovie = await response.data.Search[0]
+        setFirstRecommendation(firstMovie)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
     fetchMovie()
-  }, [])
+  }, [id])
+
+  // Get the first movie from the recommendations.
+  useEffect(() => {
+    const firstMovie = recommendations?.split(",")[0]
+    if (firstMovie) {
+      getFirstMovie(firstMovie)
+    }
+  }, [recommendations])
 
   return (
     <Layout setTheme={setTheme}>
       {error ? <div>{error}</div> : null}
       {movie ? (
-        <div className={`movieContainer-${theme}`}>
-          <h1 className="movieTitle">{movie.Title}</h1>
-          <div className="movieTagline">
-            <p>{movie.Year} • {movie.Rated} • {movie.Runtime}</p>
-          </div>
-          <div className="movieVideo">
-            <img src={movie.Poster} alt={movie.Title} />
-            <FaRegPlayCircle className="moviePlayButton" />
-          </div>
-          <div className="moviePoster">
-            <img src={movie.Poster} alt={movie.Title} />
-          </div>
-          <div className="moviePlotAndGenresContainer">
-            <div className="movieGenres">
-              {movie.Genre ? movie.Genre.split(', ').map((genre) => (
-                <p className="movieGenre" key={genre}>{genre}</p>
-                )) : null}
+        <div>
+          <div className={`movieContainer-${theme}`}>
+            <h1 className="movieTitle">{movie.Title}</h1>
+            <div className="movieTagline">
+              <p>{movie.Year} • {movie.Rated} • {movie.Runtime}</p>
             </div>
-            <div className="moviePlot">
-              <p>{movie.Plot}</p>
+            <div className="movieVideo">
+              <img src={movie.Poster} alt={movie.Title} />
+              <FaRegPlayCircle className="moviePlayButton" />
             </div>
-          </div>
-          <div className="movieRatingContainer">
-            <div className="movieRating">
-              <FaStar color="yellow" />
-              <p>{movie.imdbRating} / 10</p>
+            <div className="moviePoster">
+              <img src={movie.Poster} alt={movie.Title} />
             </div>
-            <div className="movieRate">
-              <CiStar color="#5799ef" />
-              <p>Rate</p>
+            <div className="moviePlotAndGenresContainer">
+              <div className="movieGenres">
+                {movie.Genre ? movie.Genre.split(', ').map((genre) => (
+                  <p className="movieGenre" key={genre}>{genre}</p>
+                  )) : null}
+              </div>
+              <div className="moviePlot">
+                <p>{movie.Plot}</p>
+              </div>
             </div>
+            <div className="movieRatingContainer">
+              <div className="movieRating">
+                <FaStar color="yellow" />
+                <p>{movie.imdbRating} / 10</p>
+              </div>
+              <div className="movieRate">
+                <CiStar color="#5799ef" />
+                <p>Rate</p>
+              </div>
+            </div>
+            <div className="movieDivider">
+              <Divider color="gray" />
+            </div>
+            <div className="moviePeople">
+              <h2>Director</h2>
+              <p>{movie.Director}</p>
+            </div>
+            <div className="movieDivider">
+              <Divider color="gray" />
+            </div>
+            <div className="moviePeople">
+              <h2>Writers</h2>
+              <p>{movie.Writer}</p>
+            </div>
+            <div className="movieDivider">
+              <Divider color="gray" />
+            </div>
+            <div className="moviePeople">
+              <h2>Stars</h2>
+              <p>{movie.Actors}</p>
+            </div>
+            <div className="movieDivider">
+              <Divider color="gray" />
+            </div>
+            <button
+              className="movieRecommendationsButton"
+              onClick={handleRecommendations}
+            >
+              Get recommendations
+            </button>
+            {
+              isLoading ? <div>Loading...</div> : null
+            }
+            {
+              recommendations ? (
+                <div className="movieRecommendations">
+                  <h2>Recommendations based on movies you've viewed</h2>
+                  <p>{recommendations}</p>
+                </div>
+              ) : null
+            }
           </div>
-          <div className="movieDivider">
-            <Divider color="gray" />
-          </div>
-          <div className="moviePeople">
-            <h2>Director</h2>
-            <p>{movie.Director}</p>
-          </div>
-          <div className="movieDivider">
-            <Divider color="gray" />
-          </div>
-          <div className="moviePeople">
-            <h2>Writers</h2>
-            <p>{movie.Writer}</p>
-          </div>
-          <div className="movieDivider">
-            <Divider color="gray" />
-          </div>
-          <div className="moviePeople">
-            <h2>Stars</h2>
-            <p>{movie.Actors}</p>
-          </div>
-          <div className="movieDivider">
-            <Divider color="gray" />
-          </div>
-          <button onClick={handleRecommendations}>Get recommendations</button>
+          {
+          firstRecommendation ? (
+              <NavLink
+                className="movieFirstRecommendation"
+                to={`/movie/${firstRecommendation.imdbID}`}
+                end
+              >
+                <img src={firstRecommendation.Poster} alt={firstRecommendation.Title} />
+                <p>{firstRecommendation.Title}</p>
+              </NavLink>
+          ) : null
+          }
         </div>
       ) : <div>Loading...</div>}
     </Layout>
