@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
 import SearchResults from './SearchResults'
 import Movie from './components/Movie'
 import ThemeContext from './contexts/theme'
-import { store } from './state/store'
+import { RootState, store } from './state/store'
 
 import './index.scss'
 

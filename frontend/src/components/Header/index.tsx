@@ -1,6 +1,6 @@
 import axios from "axios"
 import { ReactNode, useContext, useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { NavLink, useLocation, useNavigate } from "react-router"
 import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
@@ -8,9 +8,10 @@ import { MdLightMode } from "react-icons/md";
 import useDebounce from "../../hooks/useDebounce"
 import ThemeContext from "../../contexts/theme"
 import { replaceResults, setError, setIsLoading } from "../../state/searchResults/searchResultsSlice"
+import { replaceInput } from "../../state/searchInput/searchInputSlice";
+import { RootState } from "../../state/store";
 
 import "./styles.scss"
-import { replaceInput } from "../../state/searchInput/searchInputSlice";
 
 interface HeaderProps {
   children: ReactNode
@@ -19,39 +20,50 @@ interface HeaderProps {
 
 const Header = ({ children, setTheme }: HeaderProps) => {
   const theme = useContext(ThemeContext)
-  const [searchInput, setSearchInput] = useState("")
-  const debouncedInput = useDebounce(searchInput, 1000)
+  const searchInputRedux = useSelector((state: RootState) => state.searchInput.searchInput)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
+  // If the user navigates to a different page and goes back to the home page, the search input must not be reset.
+  const [searchInput, setSearchInput] = useState(location.pathname === '/' ? searchInputRedux : "")
+  const debouncedInput = useDebounce(searchInput, 1000)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value)
   }
 
   const search = async () => {
+    dispatch(setIsLoading(true))
     if (debouncedInput.length) {
+      // If search is triggered from a different page, navigate to the home page.
       if (location.pathname !== '/') {
         navigate('/')
       }
-      dispatch(setIsLoading(true))
+      // Fetch search results.
       await axios.get(`${import.meta.env.VITE_API_URL}search/${debouncedInput}/page/1`)
         .then((response) => {
           console.log(response.data)
+          // If the response is successful, replace the search results with the new results.
           if (response.data.Response === "True") {
             dispatch(replaceResults(response.data))
             dispatch(setError(""))
           } else {
             dispatch(setError(response.data.Error))
           }
-          dispatch(setIsLoading(false))
         })
         .catch((error) => {
           console.error(error)
           dispatch(setError("An error occurred while searching for movies. Please try again later."))
-          dispatch(setIsLoading(false))
         })
+    } else {
+      dispatch(replaceResults({
+        Response: "False",
+        Search: [],
+        totalResults: "0"
+      }))
+      dispatch(setError(""))
     }
+    dispatch(setIsLoading(false))
   }
 
   const handleHomeClick = () => {

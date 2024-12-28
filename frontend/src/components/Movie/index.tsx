@@ -11,6 +11,8 @@ import { Movie as IMovie } from "../../interfaces"
 
 import "./styles.scss"
 import Divider from "../Divider";
+import { useSelector } from "react-redux";
+import { RootState } from "../../state/store";
 
 interface MovieProps {
   setTheme: (theme: "light" | "dark") => void
@@ -18,6 +20,7 @@ interface MovieProps {
 
 const Movie = ({ setTheme }: MovieProps) => {
   const theme = useContext(ThemeContext)
+  const searchInput = useSelector((state: RootState) => state.searchInput.searchInput)
   const { id } = useParams()
   const [movie, setMovie] = useState<IMovie | null>(null)
   const [error, setError] = useState<string | null>(null)
