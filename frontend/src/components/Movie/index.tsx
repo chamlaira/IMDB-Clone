@@ -2,25 +2,39 @@ import axios from "axios"
 import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { FaRegPlayCircle } from "react-icons/fa"
-import { FaStar } from "react-icons/fa";
-import { CiStar } from "react-icons/ci";
+import { FaStar } from "react-icons/fa"
+import { CiStar } from "react-icons/ci"
+import { useDispatch, useSelector } from "react-redux"
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter"
+import { createClient } from "@supabase/supabase-js"
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
+import { OpenAIEmbeddings } from "@langchain/openai"
+import { RunnableSequence } from "@langchain/core/runnables"
+import { PromptTemplate } from "@langchain/core/prompts"
+import { ChatOpenAI } from "@langchain/openai"
+import { StringOutputParser } from "@langchain/core/output_parsers"
 
 import ThemeContext from "../../contexts/theme"
 import Layout from "../Layout"
+import Divider from "../Divider"
 import { Movie as IMovie } from "../../interfaces"
+import { RootState } from "../../state/store"
+import { addMovie } from "../../state/viewedMovies/viewedMoviesSlice"
 
 import "./styles.scss"
-import Divider from "../Divider";
-import { useSelector } from "react-redux";
-import { RootState } from "../../state/store";
 
 interface MovieProps {
   setTheme: (theme: "light" | "dark") => void
 }
 
+interface Doc {
+  pageContent: string
+}
+
 const Movie = ({ setTheme }: MovieProps) => {
   const theme = useContext(ThemeContext)
-  const searchInput = useSelector((state: RootState) => state.searchInput.searchInput)
+  const viewedMovies = useSelector((state: RootState) => state.viewedMovies.viewedMovies)
+  const dispatch = useDispatch()
   const { id } = useParams()
   const [movie, setMovie] = useState<IMovie | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -30,6 +44,7 @@ const Movie = ({ setTheme }: MovieProps) => {
       .then((response) => {
         console.log(response.data)
         setMovie(response.data)
+        dispatch(addMovie(response.data))
         setError(null)
       })
       .catch((error) => {
@@ -38,8 +53,70 @@ const Movie = ({ setTheme }: MovieProps) => {
       })
   }
 
+  const handleRecommendations = async () => {
+    // Split the JSON into chunks.
+    const splitter = new RecursiveCharacterTextSplitter()
+    const chunks = await splitter.createDocuments([JSON.stringify(viewedMovies)])
+
+    // Delete the entries from the vector db.
+    const SUPABSE_URL = import.meta.env.VITE_SUPABASE_URL
+    const SUPABASE_API_KEY = import.meta.env.VITE_SUPABASE_API_KEY
+    const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY
+    const client = createClient(SUPABSE_URL, SUPABASE_API_KEY)
+    await client.from("documents").delete().neq("id", 0)
+
+    // Send the chunks to the vector db.
+    await SupabaseVectorStore.fromDocuments(
+      chunks,
+      new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+      {
+        client,
+        tableName: "documents"
+      }
+    )
+
+    const question = "What movies are similar in all the movies in the vector db?"
+    const llm = new ChatOpenAI({ openAIApiKey: OPENAI_API_KEY })
+    const embeddings = new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY })
+    const vectorStore = new SupabaseVectorStore(embeddings, {
+      client,
+      tableName: "documents",
+      queryName: "match_documents"
+    })
+    const retriever = vectorStore.asRetriever()
+    const combineDocuments = (docs: Doc[]) => {
+      return docs.map((doc) => doc.pageContent).join(" ")
+    }
+    const answerTemplate = `Suggest movies that are similar to the following JSON-formatted movies. Don't include the movies listed here.
+    Movies: {movies}
+    answer: `
+    const answerPrompt = PromptTemplate.fromTemplate(answerTemplate)
+
+    // Convert standalone question to embeddings and output to string.
+    const retrieverChain = RunnableSequence.from([
+      retriever,
+      combineDocuments,
+    ])
+
+    const chain = RunnableSequence.from([
+      {
+        movies: retrieverChain
+      },
+      // Pass the movies to the answer prompt.
+      answerPrompt,
+      // Pass the prompt to the LLM.
+      llm,
+      // Parse the output.
+      new StringOutputParser()
+    ])
+
+    const response = await chain.invoke(question)
+    console.log('results', response)
+  }
+
   useEffect(() => {
     fetchMovie()
+    console.log('viewedMovies', viewedMovies)
   }, [])
 
   return (
@@ -102,6 +179,7 @@ const Movie = ({ setTheme }: MovieProps) => {
           <div className="movieDivider">
             <Divider color="gray" />
           </div>
+          <button onClick={handleRecommendations}>Get recommendations</button>
         </div>
       ) : <div>Loading...</div>}
     </Layout>
