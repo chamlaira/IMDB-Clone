@@ -87,7 +87,7 @@ const Movie = ({ setTheme }: MovieProps) => {
     const combineDocuments = (docs: Doc[]) => {
       return docs.map((doc) => doc.pageContent).join(" ")
     }
-    const answerTemplate = `Suggest movies that are similar to the following JSON-formatted movies. Don't include the movies listed here.
+    const answerTemplate = `Suggest movies that are similar to the following JSON-formatted movies. Don't include the movies listed here. Output the movies separated by commas.
     Movies: {movies}
     answer: `
     const answerPrompt = PromptTemplate.fromTemplate(answerTemplate)
@@ -116,7 +116,6 @@ const Movie = ({ setTheme }: MovieProps) => {
 
   useEffect(() => {
     fetchMovie()
-    console.log('viewedMovies', viewedMovies)
   }, [])
 
   return (
