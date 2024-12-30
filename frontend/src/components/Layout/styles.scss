@@ -1,0 +1,44 @@
+.layoutContainer-dark {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: #1a1a1a;
+
+  a {
+    color: #e3d80b;
+  }
+
+  a:hover {
+    color: #d1cc64;
+  }
+}
+
+.layoutContainer-light {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: white;
+
+  p {
+    color: black;
+  }
+  a {
+    color: black;
+  }
+
+  a:hover {
+    color: gray;
+  }
+}
+
+.childrenContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+
+  @media screen and (min-width: 768px) {
+    padding: 2rem min(20%, 200px);
+  }
+}
