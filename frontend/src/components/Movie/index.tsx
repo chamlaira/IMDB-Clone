@@ -136,7 +136,12 @@ const Movie = ({ setTheme }: MovieProps) => {
   }
 
   useEffect(() => {
+    // Fetch the movie details.
     fetchMovie()
+
+    // Reset recommendations.
+    setRecommendations(null)
+    setFirstRecommendation(null)
   }, [id])
 
   // Get the first movie from the recommendations.
