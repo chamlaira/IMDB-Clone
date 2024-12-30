@@ -66,7 +66,7 @@ const Home = ({ setTheme }: HomeProps) => {
           searchResults.error?.length ? <div>{searchResults.error}</div> : null
         }
         {
-          searchResults.loading ? <Loading /> : null
+          searchResults.loading ? <Loading center /> : null
         }
         {!searchResults.error && !searchResults.loading && searchResults.searchResults.Search ? (
           <>
@@ -78,7 +78,7 @@ const Home = ({ setTheme }: HomeProps) => {
             <div
               ref={observerRef}
             >
-              {hasMore && searchInput.searchInput.length ? <Loading /> : <p>No items to display</p>}
+              {hasMore && searchInput.searchInput.length ? <Loading center /> : <p>No movies to display</p>}
             </div>
           </>
         ) : null}

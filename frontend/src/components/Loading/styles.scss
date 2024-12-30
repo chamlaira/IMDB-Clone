@@ -1,0 +1,29 @@
+.loadingContainer {
+  svg {
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+
+  svg:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  svg:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
+
+.loadingCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}

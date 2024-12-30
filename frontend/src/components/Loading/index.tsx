@@ -1,20 +1,24 @@
+import { useContext } from "react"
+import { GoDotFill } from "react-icons/go"
+
+import ThemeContext from "../../contexts/theme"
 
 import "./styles.scss"
 
 interface LoadingProps {
-  movie: {
-    Title: string
-    Year: string
-    imdbID: string
-    Type: string
-    Poster: string
-  }
+  center?: boolean
 }
 
-const Loading = () => (
-  <div>
-    <p>Loading...</p>
-  </div>
-)
+const Loading = ({ center }: LoadingProps) => {
+  const theme = useContext(ThemeContext)
+
+  return (
+    <div className={`loadingContainer ${center ? 'loadingCenter' : ''}`}>
+      <GoDotFill color={theme === 'light' ? 'black' : undefined} />
+      <GoDotFill color={theme === 'light' ? 'black' : undefined} />
+      <GoDotFill color={theme === 'light' ? 'black' : undefined} />
+    </div>
+  )
+}
 
 export default Loading

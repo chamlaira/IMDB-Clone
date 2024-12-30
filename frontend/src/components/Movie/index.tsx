@@ -214,15 +214,17 @@ const Movie = ({ setTheme }: MovieProps) => {
             <div className="movieDivider">
               <Divider color="gray" />
             </div>
-            <button
-              className="movieRecommendationsButton"
-              onClick={handleRecommendations}
-            >
-              Get recommendations
-            </button>
-            {
-              isLoading ? <Loading /> : null
-            }
+            <div className="movieRecommendationsButton">
+              {
+                isLoading ? <Loading center /> : (
+                  <button
+                    onClick={handleRecommendations}
+                  >
+                    Get recommendations
+                  </button>
+                )
+              }
+            </div>
             {
               recommendations ? (
                 <div className="movieRecommendations">
