@@ -1,18 +1,20 @@
-.footerContainer {
+.footerContainer-dark {
   flex-shrink: 0;
   height: 50px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #1a1a1a;
-}
-
-.dark {
   background: #242424;
 }
 
-.light {
+.footerContainer-light {
+  flex-shrink: 0;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: #f5f5f5;
 
   p {

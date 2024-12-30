@@ -12,7 +12,7 @@ const Footer = ({ children }: FooterProps) => {
   const theme = useContext(ThemeContext)
 
   return (
-    <div className={`footerContainer ${theme}`}>
+    <div className={`footerContainer-${theme}`}>
       <p>{children}</p>
     </div>
   )
