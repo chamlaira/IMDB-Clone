@@ -85,7 +85,7 @@ const Header = ({ children, setTheme }: HeaderProps) => {
   }, [debouncedInput])
 
   return (
-    <div className={`headerContainer header${theme.charAt(0).toUpperCase() + theme.slice(1)}`}>
+    <div className={`headerContainer-${theme}`}>
       <div className="headerContent">
         <NavLink onClick={handleHomeClick} to="/"><h1>{children}</h1></NavLink>
       </div>
