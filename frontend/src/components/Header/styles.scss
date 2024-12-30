@@ -23,17 +23,21 @@
   .searchContainer {
     margin-left: 0;
 
-    @media screen and (min-width: 768px) {
-      margin-left: 100px;
-    }
-
     .search {
       background: white;
       color: black;
+      border: 0;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      width: calc(100vw - 10rem);
 
       @media screen and (min-width: 768px) {
-        width: calc(100vw - 400px);
+        width: calc(100vw - 25rem);
       }
+    }
+
+    .search:focus {
+      outline: none;
     }
   }
 
