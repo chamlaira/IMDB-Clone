@@ -63,11 +63,9 @@ const Home = ({ setTheme }: HomeProps) => {
     <div>
       <Layout setTheme={setTheme}>
         {
-          searchResults.error?.length ? <div>{searchResults.error}</div> : null
-        }
-        {
+          searchResults.error?.length ? <div>{searchResults.error}</div> : (
           searchResults.loading ? <Loading center /> : null
-        }
+        )}
         {!searchResults.error && !searchResults.loading && searchResults.searchResults.Search ? (
           <>
             <div>
