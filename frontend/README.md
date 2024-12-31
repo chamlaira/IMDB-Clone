@@ -1,4 +1,5 @@
 # Getting Started
+
 Use Node 20 and above.
 ```
 nvm install 20
@@ -14,10 +15,6 @@ pnpm i
 # or
 bun i
 ```
-Run the local redis server.
-```
-redis-server
-```
 Run the dev server.
 ```
 npm run dev
@@ -28,4 +25,4 @@ pnpm run dev
 # or
 bun dev
 ```
-Go to `localhost:8080` for the API.
+Go to `localhost:5173` for the app.
