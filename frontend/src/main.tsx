@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router'
@@ -11,7 +11,11 @@ import { store } from './state/store'
 import './index.scss'
 
 function Root() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [theme, setTheme] = useState<'light' | 'dark'>(localStorage.getItem('theme') as 'light' | 'dark' || 'dark')
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme)
+  }, [theme])
 
   return (
     <Provider store={store}>
