@@ -13,6 +13,7 @@ import { RunnableSequence } from "@langchain/core/runnables"
 import { PromptTemplate } from "@langchain/core/prompts"
 import { ChatOpenAI } from "@langchain/openai"
 import { StringOutputParser } from "@langchain/core/output_parsers"
+import { IoSparklesOutline } from "react-icons/io5";
 
 import ThemeContext from "../../contexts/theme"
 import Layout from "../Layout"
@@ -220,6 +221,7 @@ const Movie = ({ setTheme }: MovieProps) => {
                   <button
                     onClick={handleRecommendations}
                   >
+                    <IoSparklesOutline />
                     Get recommendations
                   </button>
                 )
