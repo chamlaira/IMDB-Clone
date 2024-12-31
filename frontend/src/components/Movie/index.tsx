@@ -156,7 +156,7 @@ const Movie = ({ setTheme }: MovieProps) => {
 
   return (
     <Layout setTheme={setTheme}>
-      {error ? <div>{error}</div> : (
+      {error ? <div><p>{error}</p></div> : (
         isLoading ? <Loading /> : null
       )}
       {movie ? (
