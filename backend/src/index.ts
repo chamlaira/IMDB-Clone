@@ -7,7 +7,10 @@ import Redis from "ioredis";
 dotenv.config();
 
 const app = express();
-const redis = new Redis();
+const redis = new Redis({
+  port: parseInt(process.env.REDIS_PORT || "6379"),
+  host: process.env.REDIS_HOST || "localhost",
+});
 
 const PORT = process.env.PORT || 8080;
 const API_URL = process.env.API_URL || "http://www.omdbapi.com/";
