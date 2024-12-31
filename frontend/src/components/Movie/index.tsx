@@ -43,18 +43,21 @@ const Movie = ({ setTheme }: MovieProps) => {
   const [recommendations, setRecommendations] = useState<string | null>(null)
   const [firstRecommendation, setFirstRecommendation] = useState<IMovie | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isMovieLoading, setIsMoveLoading] = useState<boolean>(true)
 
   // Fetch the movie details.
   const fetchMovie = async () => {
+    setIsMoveLoading(true)
     await axios.get(`${import.meta.env.VITE_API_URL}movie-details/${id}`)
       .then((response) => {
-        console.log(response.data)
         setMovie(response.data)
         dispatch(addMovie(response.data))
+        setIsMoveLoading(false)
         setError(null)
       })
       .catch((error) => {
         setError("An error occurred while fetching the movie. Please try again later.")
+        setIsMoveLoading(false)
         console.error(error)
       })
   }
@@ -122,7 +125,6 @@ const Movie = ({ setTheme }: MovieProps) => {
     const response = await chain.invoke(question)
     setRecommendations(response)
     setIsLoading(false)
-    console.log('results', response)
   }
 
   const getFirstMovie = async (movie: string) => {
@@ -157,7 +159,7 @@ const Movie = ({ setTheme }: MovieProps) => {
   return (
     <Layout setTheme={setTheme}>
       {error ? <div><p>{error}</p></div> : (
-        isLoading ? <Loading /> : null
+        isMovieLoading ? <Loading /> : null
       )}
       {movie ? (
         <div>
