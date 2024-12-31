@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import axios from "axios";
 import cors from "cors";
 import Redis from "ioredis";
+import path from "path";
 
 dotenv.config();
 
@@ -17,10 +18,6 @@ const API_URL = process.env.API_URL || "http://www.omdbapi.com/";
 const API_KEY = process.env.API_KEY || "";
 
 app.use(cors());
-
-app.get("/", (_, res) => {
-  res.send(`OMDB app listening on port ${PORT}`);
-});
 
 // Search for movies.
 app.get("/search/:searchParam/page/:pageNumber", async (req, res) => {
@@ -50,7 +47,7 @@ app.get("/search/:searchParam/page/:pageNumber", async (req, res) => {
 });
 
 // Get movie details.
-app.get("/movie/:movieId", async (req: Request, res: Response): Promise<void> => {
+app.get("/movie-details/:movieId", async (req: Request, res: Response): Promise<void> => {
   const movieId = req.params.movieId;
   const cacheKey = `movie-${movieId}`;
 
@@ -72,6 +69,14 @@ app.get("/movie/:movieId", async (req: Request, res: Response): Promise<void> =>
       console.error(error);
       res.status(500).send("Error fetching movie details");
     });
+});
+
+// Serve the static files from the React app.
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+// Handle requests by serving index.html for all routes.
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
 });
 
 app.listen(PORT, () => {

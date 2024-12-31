@@ -46,7 +46,7 @@ const Movie = ({ setTheme }: MovieProps) => {
 
   // Fetch the movie details.
   const fetchMovie = async () => {
-    await axios.get(`${import.meta.env.VITE_API_URL}movie/${id}`)
+    await axios.get(`${import.meta.env.VITE_API_URL}movie-details/${id}`)
       .then((response) => {
         console.log(response.data)
         setMovie(response.data)
