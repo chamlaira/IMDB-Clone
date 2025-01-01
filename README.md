@@ -1,6 +1,7 @@
 # Getting Started
 - Go to `frontend` for the React application.
 - Go to `backend` for the ExpressJS backend.
+- Go to `https://omdb-eosin.vercel.app/` for the deployed app.
 
 ## Frontend Instructions
 Go to the `frontend` folder.
@@ -96,3 +97,17 @@ Go to `localhost:8080` for the API.
 7. Redux state management
 
     The search input, search results, and viewed movies are stored using Redux. Please note that viewed movies are needed for the recommendation engine. See number 6 in this section.
+
+8. Vercel deployment
+
+    I deployed the app using Vercel. Go to `https://omdb-eosin.vercel.app/` to see the deployed app.
+
+## Assumptions and Limitations
+### Assumptions
+- I assumed backend caching was better to implement than frontend caching. This is because the data is shared across all clients. Backend caching will reduce calls to the server.
+- I used both useContext and Redux to demonstrate my knowledge on both.
+- I used SASS instead of plain CSS so I can nest, use variables and mixins, etc.
+- I chose to store the OMDB data in a vector DB for the recommendation engine, even though it might seem like overkill. I wanted to show I have experience in using RAG. Passing the plain JSON movies directly to the LLM would theoretically work as well.
+### Limitations
+- The API does not have authentication.
+- The recommendation engine results are not cleaned and parsed. LLM hallucinations might happen at times.
