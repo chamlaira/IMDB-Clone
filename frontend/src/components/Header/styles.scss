@@ -60,6 +60,7 @@
 
 .searchContainer {
   margin-left: 0;
+  position: relative;
 
   .search {
     background: white;
@@ -71,6 +72,16 @@
     @media screen and (min-width: 768px) {
       width: calc(100vw - 25rem);
     }
+  }
+
+  button {
+    background: transparent;
+    padding: 0;
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    border: none;
+    border-radius: 0;
   }
 }
 
