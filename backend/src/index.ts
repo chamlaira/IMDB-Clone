@@ -43,6 +43,7 @@ app.get("/search/:searchParam/page/:pageNumber", async (req, res) => {
     })
     .catch((error) => {
       console.error(error);
+      res.status(500).send("Error fetching search results.");
     });
 });
 
@@ -67,7 +68,7 @@ app.get("/movie-details/:movieId", async (req: Request, res: Response): Promise<
     })
     .catch((error) => {
       console.error(error);
-      res.status(500).send("Error fetching movie details");
+      res.status(500).send("Error fetching movie details.");
     });
 });
 
